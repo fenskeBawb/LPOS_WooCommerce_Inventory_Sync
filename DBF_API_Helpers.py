@@ -2,13 +2,19 @@ from datetime import date
 from dbfread import DBF
 import csv
 
+import time
+
+start_time = time.time()
+connect_items_csv = open("C:/Users/fensk/Documents/GitHub/LPOS_WooCommerce_Inventory_Sync/ConnectItems.csv", "r", newline='')
+connect_items = csv.DictReader(connect_items_csv)
+connect_items_list = []
+for item in connect_items:
+    connect_items_list.append(item)
 
 def get_id(item):
-    with open("ConnectItems.csv", "r", newline='') as csv_file:
-        connect_items = csv.DictReader(csv_file)
-        for connection in connect_items:
-            if connection["sku"] == item["CODE_NUM"]:
-                return connection["id"]
+    for connection in connect_items_list:
+        if connection["sku"] == item["CODE_NUM"]:
+            return connection["id"]
     return -1
 
 def isEcom(item_type):
@@ -28,20 +34,20 @@ def make_stock_payload():
     payload = []
     print("Connecting to LPOS database")
     for inv_record in DBF("Z:/LIQCODE.dbf"):
-        id = get_id(inv_record)
-        if id != -1:
+        if isEcom(inv_record["TYPENAM"]):
             if inv_record["LAST_SALE"] == date.today():
                 data = {
-                    "id": id,
+                    "id": get_id(inv_record),
                     "stock_quantity": inv_record["QTY_ON_HND"]
                 }
                 payload.append(data)
             elif inv_record["LAST_RCV"] == date.today():
                 data = {
-                    "id": id,
+                    "id": get_id(inv_record),
                     "stock_quantity": inv_record["QTY_ON_HND"]
                 }
                 payload.append(data)
+    print(round(time.time() - start_time))
     print("found " + str(len(payload)) + " items to update")    
     return payload
 
@@ -50,16 +56,15 @@ def make_update_payload():
     payload = []
     print("Connecting to LPOS database")
     for inv_record in DBF("Z:/LIQCODE.dbf"):
-        id = get_id(inv_record)
-        if id != -1:
-            if inv_record["LAST_EDIT"] == date.today() and id != -1:
+        if isEcom(inv_record["TYPENAM"]):
+            if inv_record["LAST_EDIT"] == date.today():
                 categories_with_nones = set_dept(inv_record)
                 categories = []
                 for category in categories_with_nones:
                     if isinstance(category, dict):
                         categories.append(category)
                 data = {
-                    "id": id,
+                    "id": get_id(inv_record),
                     "name": inv_record["BRAND"] + " " + inv_record["DESCRIP"] + " " + inv_record["SIZE"],
                     "type": "simple",
                     "status": "publish",
@@ -71,14 +76,16 @@ def make_update_payload():
                     "stock_quantity": inv_record["QTY_ON_HND"],
                     "categories": categories,
                 }
-                payload.append(data)
+                if data["id"] != -1:
+                    payload.append(data)
     print("found " + str(len(payload)) + " items to update")    
     return payload
 
 def make_new_item_payload():
     payload = []
     print("Connecting to LPOS database")
-    for inv_record in DBF("Z:/LIQCODE.dbf"):
+    database = DBF("Z:/LIQCODE.dbf")
+    for inv_record in database:
         if get_id(inv_record) == -1 and isEcom(inv_record["TYPENAM"]):
             categories_with_nones = set_dept(inv_record)
             categories = []

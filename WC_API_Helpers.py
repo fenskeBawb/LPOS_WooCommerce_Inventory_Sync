@@ -27,6 +27,7 @@ def deploy_batches(payload, deployment_type = "update"):
             else:
                 batch_count += 1
                 batch["update"].append(payload.pop(0))
+        print("Final Batch")
         response = wcapi.post("products/batch", batch).json()
     elif deployment_type == "create":
         batch = {

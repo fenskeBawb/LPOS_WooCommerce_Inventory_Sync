@@ -23,11 +23,12 @@ def recursive_update(wcapi, writer, counter=1):
 		for product in products:
 			stripped_item = {
 				"id": product["id"],
-				"sku": product["sku"]
+				"sku": product["sku"],
+				"stock_quantity": product["stock_quantity"]
 			}
 			writer.writerow(stripped_item.values())
 		print(str(round(counter/.95, 2)) + "%% complete")
 		recursive_update(wcapi, writer, counter+1)
 
-update_connect_items()
+# update_connect_items()
 
