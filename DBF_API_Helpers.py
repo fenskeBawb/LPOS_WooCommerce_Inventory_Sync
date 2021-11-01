@@ -13,7 +13,7 @@ for item in connect_items:
 
 def get_id(item):
     for connection in connect_items_list:
-        if connection["sku"] == item["CODE_NUM"]:
+        if connection["sku"] == item["CODE_NUM"].strip():
             return connection["id"]
     return -1
 

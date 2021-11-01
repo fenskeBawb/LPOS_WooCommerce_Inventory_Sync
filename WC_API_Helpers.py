@@ -46,6 +46,7 @@ def deploy_batches(payload, deployment_type = "update"):
                 batch_count += 1
                 batch["create"].append(payload.pop(0))
             response = wcapi.post("products/batch", batch).json()
+            print(response)
 
 
 # This will be called by deploy_batches if the batch fails. It will take the batch and add each item individually.
@@ -59,3 +60,26 @@ def deploy_singles(batch, deployment_type, wcapi):
     elif deployment_type == "create":
         for inv_record in batch["create"]:
             response = wcapi.post("products", inv_record).json()
+
+# TODO: This definition doesn't work right now. remove the .csv crap and just have
+#       it return the list instead of writing it to a .csv
+def find_items_with_no_pics(counter = 0):
+	products = wcapi.get("products?per_page=100&page=" + str(counter)).json()
+	# get items without a picture and place them into a csv ["name"]["id"]["images"]
+	no_pic_items = []
+	for product in products:
+		if isinstance(product, dict):
+			if product["images"] == []:
+				data = {
+					"name":product["name"],
+					"id":product["id"]
+				}
+				no_pic_items.append(data)
+	with open("C:/Users/fensk/Documents/GitHub/RedlandsLiquor/InventorySyncronizer/no_pic_items.csv", "a", newline="") as no_pic_file:
+		header = ["name", "id"]
+		writer = csv.DictWriter(no_pic_file, header)
+		writer.writeheader()
+		writer.writerows(no_pic_items)
+
+	if products:
+		find_items_with_no_pics(counter + 1)
