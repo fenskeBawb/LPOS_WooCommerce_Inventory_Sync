@@ -108,6 +108,17 @@ def make_new_item_payload():
     print("found " + str(len(payload)) + " items to update")    
     return payload
 
+# TODO: This will be taking the information from the "inv_log.dbf" In order to catch any deleted items and 
+#       Sending them to WooCommerce
+def make_delete_item_payload():
+    payload = []
+    for inv_record in DBF("Z:/INVLOG.dbf"):
+        if inv_record["MODULE"] == "Deleted":
+            if inv_record["EDATE"] == date.today():
+                print(inv_record["CODE_NUM"])
+                payload.append(get_id(inv_record["CODE_NUM"]))
+    return payload
+
 
 
 def item_create_from_lpos(inv_record, id=-1):

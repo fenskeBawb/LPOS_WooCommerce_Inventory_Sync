@@ -47,6 +47,24 @@ def deploy_batches(payload, deployment_type = "update"):
                 batch["create"].append(payload.pop(0))
             response = wcapi.post("products/batch", batch).json()
             print(response)
+    elif deployment_type == "delete":
+        batch = {
+            "delete":[]
+        }
+        while payload != []:
+            if batch_count >= batch_size:
+                try:
+                    print("Deploying batch")
+                    response = wcapi.post("products/batch", batch).json()
+                except:
+                    deploy_singles(batch, deployment_type, wcapi)
+                batch["delete"] = []
+                batch_count = 0
+            else:
+                batch_count += 1
+                batch["delete"].append(payload.pop(0))
+            response = wcapi.post("products/batch", batch).json()
+            print(response)
 
 
 # This will be called by deploy_batches if the batch fails. It will take the batch and add each item individually.

@@ -43,7 +43,7 @@ def get_orders(page = 1):
 def get_completed_orders(page = 1):
 	sales = wcapi.get("orders?status=completed&page="+ str(page)).json()
 	new_sales = []
-	with open("completed_orders.csv", "r", newline="") as csv_file:
+	with open("C:/Users/fensk/Documents/GitHub/LPOS_WooCommerce_Inventory_Sync/completed_orders.csv", "r", newline="") as csv_file:
 		print("Getting all the completed orders")
 		orders_reader = csv.reader(csv_file)
 		order_ids = []
@@ -73,12 +73,10 @@ def change_lpos_qty(new_sales):
 	with open("completed_orders.csv", "a", newline="") as csv_file:
 		order_writer = csv.writer(csv_file)
 		for sale in new_sales:
-			order_writer.writerow([sale["id"]])
 			items = sale["line_items"]
 			for item in items:
 				for thing in dbf.Process(LPOS_inv):
 					if item["sku"].strip() == thing["CODE_NUM"].strip():
 						new_qty = thing["QTY_ON_HND"] - item["quantity"]
-						# thing.QTY_ON_HND = new_qty
-
-get_completed_orders()
+						thing.QTY_ON_HND = new_qty
+			order_writer.writerow([sale["id"]])
