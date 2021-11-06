@@ -39,11 +39,26 @@ def display_incomplete_orders(page=1):
 			shopping_cart = []
 			print(sale["id"])
 			for item in order_info:
-				data = {
-					"name": item["name"],
-					"quantity": item["quantity"],
-					"sku": item["sku"]
-				}
+				data = '''
+					There is an order for {delivery_info}
+					to the address: {delivery_address}
+					contains the following items
+				'''.format(delivery_info='delivery', delivery_address='123 Go fuck yourself Avenue')
+				# TODO: add the items in as
+				#		''' 
+				# 			{item_name}
+				#			{item_quantity}
+				#		'''.format(item_name='',item_quantity='')
+				print(items)
+
+				# data = {
+				# 	"name": item["name"],
+				# 	"quantity": item["quantity"],
+				# 	"sku": item["sku"]
+				# }
+
 				print(data)
 				shopping_cart.append(data)
         display_incomplete_orders(page + 1)
+
+# string = '{} was started in {}'.format(name, year)
