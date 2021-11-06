@@ -25,40 +25,50 @@ def kacies_function():
 
 # TODO: Write a function that gets all the "processing" orders and posts them for the
 #       Cashiers to see
+def dis_inc_ord(page=1):
+	sales = wcapi.get("orders?status=processing&page=" + str(page)).json()
+	if sales:
+		for sale in sales:
+			print(sale)
+			#Let's create some strings and then print them in order
+			# delivery_info = 'An order has been recieved for: ' + 
+			# customer_name = ''
 
+dis_inc_ord()
+# def display_incomplete_orders(page=1):
+#     sales = wcapi.get("orders?status=processing&page=" + str(page)).json()
+#     database = DBF("Z:/LIQCODE.dbf")
+#     if sales:
+#         for sale in sales:
+# 			print(sale)
+# 			# date_created = sale["date_created"].split("T")[0]
+# 			# status = sale["status"]
+# 			# customer_information = sale["shipping"]
+# 			order_info = sale["line_items"]
+# 			# shopping_cart = []
+# 			print(sale["id"])
+# 			for item in order_info:
+# 				data = '''
+# 				There is an order for {delivery_info}
+# 				to the address: {delivery_address}
+# 				contains the following items
+# 				'''.format(delivery_info='delivery', delivery_address='123 Go fuck yourself Avenue')
+# 				# TODO: add the items in as
+# 				#		''' 
+# 				# 			{item_name}
+# 				#			{item_quantity}
+# 				#		'''.format(item_name='',item_quantity='')
+# 				print(item)
 
-def display_incomplete_orders(page=1):
-    sales = wcapi.get("orders?status=processing&page=" + str(page)).json()
-    database = DBF("Z:/LIQCODE.dbf")
-    if sales:
-        for sale in sales:
-			date_created = sale["date_created"].split("T")[0]
-			status = sale["status"]
-			customer_information = sale["shipping"]
-			order_info = sale["line_items"]
-			shopping_cart = []
-			print(sale["id"])
-			for item in order_info:
-				data = '''
-					There is an order for {delivery_info}
-					to the address: {delivery_address}
-					contains the following items
-				'''.format(delivery_info='delivery', delivery_address='123 Go fuck yourself Avenue')
-				# TODO: add the items in as
-				#		''' 
-				# 			{item_name}
-				#			{item_quantity}
-				#		'''.format(item_name='',item_quantity='')
-				print(items)
+# 				# data = {
+# 				# 	"name": item["name"],
+# 				# 	"quantity": item["quantity"],
+# 				# 	"sku": item["sku"]
+# 				# }
 
-				# data = {
-				# 	"name": item["name"],
-				# 	"quantity": item["quantity"],
-				# 	"sku": item["sku"]
-				# }
-
-				print(data)
-				shopping_cart.append(data)
-        display_incomplete_orders(page + 1)
+# 				print(data)
+# 				# shopping_cart.append(data)
+    
+# 	display_incomplete_orders(page + 1)
 
 # string = '{} was started in {}'.format(name, year)

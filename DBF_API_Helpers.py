@@ -5,7 +5,8 @@ import csv
 import time
 
 start_time = time.time()
-connect_items_csv = open("C:/Users/fensk/Documents/GitHub/LPOS_WooCommerce_Inventory_Sync/ConnectItems.csv", "r", newline='')
+connect_items_csv = open("ConnectItems.csv", "r", newline='')
+# connect_items_csv = open("C:/Users/fensk/Documents/GitHub/LPOS_WooCommerce_Inventory_Sync/ConnectItems.csv", "r", newline='')
 connect_items = csv.DictReader(connect_items_csv)
 connect_items_list = []
 for item in connect_items:
