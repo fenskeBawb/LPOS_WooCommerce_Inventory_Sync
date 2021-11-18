@@ -28,11 +28,31 @@ def kacies_function():
 def dis_inc_ord(page=1):
 	sales = wcapi.get("orders?status=processing&page=" + str(page)).json()
 	if sales:
+		delivery_messages = []
 		for sale in sales:
-			print(sale)
+			# print(sale)
 			#Let's create some strings and then print them in order
-			# delivery_info = 'An order has been recieved for: ' + 
-			# customer_name = ''
+			# delivery_info = 'An order has been recieved for: ' +  
+			customer_name = sale["shipping"]["first_name"] +' '+ sale["shipping"]["last_name"]
+			payment_method = sale["payment_method_title"]
+			shipping_address1 = sale['shipping']["address_1"]
+			shipping_address2 = sale['shipping']['address_2']
+			city = sale['shipping']['city']
+			state = sale['shipping']['state']
+			zip = sale['shipping']['postcode']
+			delivery_message = '''An order for {customer_name} has been found
+Please deliver the following items to the address:
+{shipping_address1} {shipping_address2}
+{city} {state} {zip} 
+Cart:\n'''.format(customer_name=customer_name, shipping_address1=shipping_address1, shipping_address2=shipping_address2, city=city, state=state, zip=zip)
+			cart = ''
+			for product in sale["line_items"]:
+				product_name = product["name"]
+				quantity = product["quantity"]
+				cart = cart + product_name + "\nQuantity: " + str(quantity) + "\n"
+			delivery_message += cart
+			print(delivery_message)
+
 
 dis_inc_ord()
 # def display_incomplete_orders(page=1):
